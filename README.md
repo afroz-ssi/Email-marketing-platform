@@ -170,43 +170,6 @@ outlook_accounts (id, email, daily_limit, sent_today, status, timestamps)
 - Lead → EmailLogs (one-to-many)
 - OutlookAccount → EmailLogs (one-to-many)
 
-## 🎥 Video Demonstration Points
-
-### 1. Platform Overview (2 min)
-- Login and navigation
-- Dashboard metrics and charts
-- Professional UI design
-
-### 2. Lead Management (2 min)
-- View sample leads with all required fields
-- Search and filter functionality
-- CRUD operations demonstration
-
-### 3. Web Scraping (3 min)
-- Single website scraping demo
-- Bulk scraping multiple URLs
-- Auto-lead creation from scraped data
-
-### 4. Campaign System (3 min)
-- Create new campaign
-- Send campaign to leads
-- Show email sending process
-
-### 5. Account Rotation (2 min)
-- Multiple Outlook accounts with different limits
-- Automatic switching demonstration
-- Reset functionality
-
-### 6. Analytics (2 min)
-- Dashboard charts and metrics
-- Campaign performance tracking
-- Real-time data updates
-
-### 7. Architecture (1 min)
-- Laravel + Vue.js stack
-- Security and performance features
-- Scalable design patterns
-
 ## 📋 Sample Data Included
 
 **5 Leads:**
@@ -316,7 +279,6 @@ database/
 - [x] **All MVP Objectives** implemented and tested
 - [x] **Professional UI** with responsive design
 - [x] **Comprehensive Documentation** in single README
-- [x] **Video Demonstration** points outlined
 
 ## 🎉 Project Status: PRODUCTION READY
 

@@ -8,7 +8,7 @@ use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
-class ScraperControllerEnhanced extends Controller
+class ScraperController extends Controller
 {
     public function scrape(Request $request)
     {
