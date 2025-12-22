@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Admin\{CampaignController, UserController, HomeController, LeadController, OutlookAccountController};
+use App\Http\Controllers\Admin\{CampaignController, HomeController, LeadController, OutlookAccountController};
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Common\CommonController;
 use App\Http\Controllers\ScraperController;
@@ -18,17 +18,6 @@ Route::middleware(['customAuth', 'isAdmin'])->group(function () {
     Route::any('admin-profile', [HomeController::class, 'adminProfile'])->name('profile');
     Route::post('admin-change-password', [HomeController::class, 'adminChangePassword'])->name('changePassword');
     Route::post('logout', [HomeController::class, 'logout'])->name('logout');
-
-    /** User */
-    Route::get('user', [UserController::class, 'userlist'])->name('users');
-    Route::any('create-user', [UserController::class, 'createUser'])->name('createUser');
-    Route::any('edit-user/{id}', [UserController::class, 'editUser'])->name('editUser');
-    Route::delete('delete-user/{id}', [UserController::class, 'deleteUser'])->name('userDelete');
-    Route::post('change-user-status', [UserController::class, 'changeUserStatus'])->name('changeuserstatus');
-    Route::get('review-user/{id}', [UserController::class, 'reviewUser'])->name('reviewUser');
-    // Route::get('client-booking/{id}', [UserController::class, 'clientBooking'])->name('clientBooking');
-    // Route::get('client-provider-matching/{id}', [UserController::class, 'clientProviderMatching'])->name('clientProviderMatching');
-    // Route::get('used-referral-code/{id}', [UserController::class, 'usedReferralCode'])->name('usedReferralCode');
 
     /** Lead */
     Route::get('leads', [LeadController::class, 'index'])->name('leads');

@@ -51,81 +51,56 @@
 
                   <!-- Results -->
                   <div v-if="scrapeResults" class="mt-4">
-                    <div v-if="scrapeResults.success" class="card border-success">
-                      <div class="card-header bg-success text-white">
-                        <h5 class="mb-0">
-                          <i class="la la-check-circle"></i> 
-                          Scraping Successful - {{ scrapeResults.company }}
-                        </h5>
-                      </div>
-                      <div class="card-body">
-                        <div class="row">
-                          <div class="col-md-4">
-                            <div class="text-center p-3 border rounded bg-light">
-                              <h3 class="text-primary mb-1">{{ scrapeResults.total_found }}</h3>
-                              <small class="text-muted">Total Contacts</small>
-                            </div>
-                          </div>
-                          <div class="col-md-4" v-if="scrapeResults.emails.length">
-                            <div class="text-center p-3 border rounded bg-light">
-                              <h3 class="text-success mb-1">{{ scrapeResults.emails.length }}</h3>
-                              <small class="text-muted">Emails Found</small>
-                            </div>
-                          </div>
-                          <div class="col-md-4" v-if="scrapeResults.phones.length">
-                            <div class="text-center p-3 border rounded bg-light">
-                              <h3 class="text-info mb-1">{{ scrapeResults.phones.length }}</h3>
-                              <small class="text-muted">Phones Found</small>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div class="row mt-4" v-if="scrapeResults.emails.length || scrapeResults.phones.length">
-                          <div class="col-md-6" v-if="scrapeResults.emails.length">
-                            <h6 class="text-success"><i class="la la-envelope"></i> Email Addresses</h6>
-                            <div class="bg-light p-3 rounded">
-                              <div v-for="email in scrapeResults.emails" :key="email" class="mb-2">
-                                <span class="badge badge-success mr-2">✓</span>
-                                <code>{{ email }}</code>
-                              </div>
-                            </div>
-                          </div>
-                          
-                          <div class="col-md-6" v-if="scrapeResults.phones.length">
-                            <h6 class="text-info"><i class="la la-phone"></i> Phone Numbers</h6>
-                            <div class="bg-light p-3 rounded">
-                              <div v-for="phone in scrapeResults.phones" :key="phone" class="mb-2">
-                                <span class="badge badge-info mr-2">✓</span>
-                                <code>{{ phone }}</code>
-                              </div>
+                    <div v-if="scrapeResults.success" class="alert alert-success">
+                      <h5>Found {{ scrapeResults.total_found }} contacts from {{ scrapeResults.company }}</h5>
+                      
+                      <div class="row mt-3" v-if="scrapeResults.emails.length || scrapeResults.phones.length">
+                        <div class="col-md-6" v-if="scrapeResults.emails.length">
+                          <h6>Emails ({{ scrapeResults.emails.length }})</h6>
+                          <div class="list-group">
+                            <div v-for="email in scrapeResults.emails" :key="email" class="list-group-item">
+                              {{ email }}
                             </div>
                           </div>
                         </div>
                         
-                        <div v-if="scrapeResults.leads_created" class="alert alert-success mt-4 mb-0">
-                          <div class="d-flex align-items-center">
-                            <i class="la la-database text-success mr-3" style="font-size: 2rem;"></i>
-                            <div>
-                              <h6 class="mb-1">✅ Leads Successfully Saved!</h6>
-                              <p class="mb-0">
-                                <strong>{{ scrapeResults.emails.length }}</strong> email(s) and 
-                                <strong>{{ scrapeResults.phones.length }}</strong> phone(s) added to your database.
-                                <br><small class="text-muted">📋 Check the leads table below to view your new contacts.</small>
-                              </p>
+                        <div class="col-md-6" v-if="scrapeResults.phones.length">
+                          <h6>Phones ({{ scrapeResults.phones.length }})</h6>
+                          <div class="list-group">
+                            <div v-for="phone in scrapeResults.phones" :key="phone" class="list-group-item">
+                              {{ phone }}
                             </div>
                           </div>
                         </div>
                       </div>
+                      
+                      <div v-if="scrapeResults.leads_created" class="alert alert-success mt-3">
+                        <h5><i class="la la-check-circle"></i> Success! Leads Created</h5>
+                        <p class="mb-2"><strong>{{ scrapeResults.emails.length }}</strong> email(s) and <strong>{{ scrapeResults.phones.length }}</strong> phone number(s) have been saved to your leads database.</p>
+                        <div class="row">
+                          <div class="col-md-6" v-if="scrapeResults.emails.length">
+                            <h6><i class="la la-envelope"></i> Emails Added:</h6>
+                            <ul class="list-unstyled">
+                              <li v-for="email in scrapeResults.emails" :key="email" class="text-success">
+                                <i class="la la-check"></i> {{ email }}
+                              </li>
+                            </ul>
+                          </div>
+                          <div class="col-md-6" v-if="scrapeResults.phones.length">
+                            <h6><i class="la la-phone"></i> Phones Added:</h6>
+                            <ul class="list-unstyled">
+                              <li v-for="phone in scrapeResults.phones" :key="phone" class="text-success">
+                                <i class="la la-check"></i> {{ phone }}
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                        <p class="mb-0"><i class="la la-info-circle"></i> <strong>Check the leads table below</strong> to see your new contacts!</p>
+                      </div>
                     </div>
                     
                     <div v-else class="alert alert-danger">
-                      <div class="d-flex align-items-center">
-                        <i class="la la-exclamation-triangle text-danger mr-3" style="font-size: 2rem;"></i>
-                        <div>
-                          <h6 class="mb-1">❌ Scraping Failed</h6>
-                          <p class="mb-0">{{ scrapeResults.message }}</p>
-                        </div>
-                      </div>
+                      <strong>Failed:</strong> {{ scrapeResults.message }}
                     </div>
                   </div>
 
@@ -144,42 +119,25 @@
 
                   <!-- Bulk Results -->
                   <div v-if="bulkResults" class="mt-4">
-                    <div class="card border-primary">
-                      <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">
-                          <i class="la la-globe"></i> 
-                          🌐 Bulk Results - {{ bulkResults.total_websites }} Websites Processed
-                        </h5>
+                    <div class="alert alert-success">
+                      <h5><i class="la la-check-circle"></i> Bulk Scraping Complete!</h5>
+                      <p>Processed {{ bulkResults.total_websites }} websites and found contacts from multiple sources.</p>
+                    </div>
+                    <div v-for="(result, index) in bulkResults.results" :key="index" class="card mb-2">
+                      <div class="card-header">
+                        {{ result.website }}
+                        <span :class="['badge ml-2', result.success ? 'badge-success' : 'badge-danger']">
+                          {{ result.success ? `${result.total_found} found` : 'Failed' }}
+                        </span>
                       </div>
-                      <div class="card-body">
-                        <div v-for="(result, index) in bulkResults.results" :key="index" class="card mb-2">
-                          <div class="card-header d-flex justify-content-between align-items-center">
-                            <span><i class="la la-globe mr-2"></i>{{ result.website }}</span>
-                            <span :class="['badge', result.success ? 'badge-success' : 'badge-danger']">
-                              {{ result.success ? `${result.total_found} contacts` : 'Failed' }}
-                            </span>
+                      <div v-if="result.success" class="card-body">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <strong>Company:</strong> {{ result.company }}<br>
+                            <strong>Emails:</strong> {{ result.emails.join(', ') || 'None' }}
                           </div>
-                          <div class="card-body" v-if="result.success">
-                            <div class="row">
-                              <div class="col-md-4">
-                                <strong>Company:</strong><br>
-                                <span class="badge badge-secondary">{{ result.company }}</span>
-                              </div>
-                              <div class="col-md-4">
-                                <strong>Emails:</strong><br>
-                                <div v-if="result.emails.length">
-                                  <code v-for="email in result.emails" :key="email" class="d-block">{{ email }}</code>
-                                </div>
-                                <span v-else class="text-muted">None found</span>
-                              </div>
-                              <div class="col-md-4">
-                                <strong>Phones:</strong><br>
-                                <div v-if="result.phones.length">
-                                  <code v-for="phone in result.phones" :key="phone" class="d-block">{{ phone }}</code>
-                                </div>
-                                <span v-else class="text-muted">None found</span>
-                              </div>
-                            </div>
+                          <div class="col-md-6">
+                            <strong>Phones:</strong> {{ result.phones.join(', ') || 'None' }}
                           </div>
                         </div>
                       </div>
@@ -318,6 +276,7 @@ const bulkLoading = ref(false);
 const scrapeResults = ref(null);
 const bulkResults = ref(null);
 const bulkWebsites = ref('');
+const newLeadIds = ref([]);
 
 const scraperForm = reactive({
   website: '',
@@ -403,6 +362,7 @@ const scrapeWebsite = async () => {
     scrapeResults.value = await response.json();
     
     if (scrapeResults.value.success && scrapeResults.value.leads_created) {
+      // Refresh the leads list immediately
       setTimeout(() => {
         router.reload({ only: ['leads'] });
       }, 1000);
@@ -437,6 +397,7 @@ const bulkScrape = async () => {
     
     bulkResults.value = await response.json();
     
+    // Refresh leads list after bulk scraping
     setTimeout(() => {
       router.reload({ only: ['leads'] });
     }, 1000);
@@ -449,6 +410,18 @@ const bulkScrape = async () => {
 </script>
 
 <style scoped>
+.list-group-item {
+  font-size: 0.9rem;
+  padding: 8px 12px;
+}
+
+.card-header {
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .table-success {
   background-color: #d4edda !important;
 }
@@ -459,12 +432,5 @@ const bulkScrape = async () => {
 
 .font-weight-bold {
   font-weight: 600 !important;
-}
-
-code {
-  background-color: #f8f9fa;
-  padding: 2px 4px;
-  border-radius: 3px;
-  font-size: 0.9em;
 }
 </style>

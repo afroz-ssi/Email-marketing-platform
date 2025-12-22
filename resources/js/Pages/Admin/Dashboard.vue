@@ -22,7 +22,7 @@
       <div class="col-xl-8">
         <div class="kt-portlet">
           <div class="kt-portlet__head">
-            <h3 class="kt-portlet__head-title">Email Trends</h3>
+            <h3 class="kt-portlet__head-title mt-3">Email Trends</h3>
             <div class="btn-group">
               <button @click="chartPeriod = 'weekly'" :class="['btn btn-sm', chartPeriod === 'weekly' ? 'btn-primary' : 'btn-secondary']">Weekly</button>
               <button @click="chartPeriod = 'monthly'" :class="['btn btn-sm', chartPeriod === 'monthly' ? 'btn-primary' : 'btn-secondary']">Monthly</button>
@@ -37,7 +37,7 @@
       <div class="col-xl-4">
         <div class="kt-portlet">
           <div class="kt-portlet__head">
-            <h3 class="kt-portlet__head-title">Top Campaigns</h3>
+            <h3 class="kt-portlet__head-title mt-3">Top Campaigns</h3>
           </div>
           <div class="kt-portlet__body">
             <apexchart type="donut" height="300" :options="campaignOptions" :series="campaignSeries" />
@@ -51,7 +51,7 @@
       <div class="col-12">
         <div class="kt-portlet">
           <div class="kt-portlet__head">
-            <h3 class="kt-portlet__head-title">Outlook Account Usage</h3>
+            <h3 class="kt-portlet__head-title mt-3">Outlook Account Usage</h3>
           </div>
           <div class="kt-portlet__body">
             <apexchart type="bar" height="250" :options="outlookOptions" :series="outlookSeries" />
@@ -66,7 +66,7 @@
 import { ref, computed, onMounted } from "vue";
 
 const props = defineProps(["data"]);
-const chartPeriod = ref('monthly');
+const chartPeriod = ref('weekly');
 
 // Metrics
 const metrics = computed(() => [
