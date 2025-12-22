@@ -59,7 +59,7 @@ npm run build
 php artisan serve
 ```
 
-**Default Login:** admin@example.com / password
+**Default Login:** admin@admin.com / password: 11111111
 
 ## 📊 Core Features
 

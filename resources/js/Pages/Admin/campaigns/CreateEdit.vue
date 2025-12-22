@@ -54,7 +54,7 @@
                 </div>
                 <div>
                   <Link
-                    :href="route('admin.users')"
+                    :href="route('admin.campaigns')"
                     class="btn btn-info btn-secondary"
                     >Cancel</Link
                   >
