@@ -70,7 +70,14 @@ class CampaignController extends Controller
 
             $perPage = $request->perPage ?? 20;
             $campaigns = $campaigns->latest()->paginate($perPage)->withQueryString();
-            return Inertia::render('Admin/campaigns/List', compact('campaigns'));
+
+            $outlookAccounts = OutlookAccount::select('id', 'email', 'sent_today', 'daily_limit')
+                ->orderBy('email')
+                ->get();
+
+            $defaultAccountId = $outlookAccounts->first()?->id;
+
+            return Inertia::render('Admin/campaigns/List', compact('campaigns', 'outlookAccounts', 'defaultAccountId'));
         } catch (\Exception $e) {
             Log::error(" :: EXCEPTION CAMPAIGNS LIST :: " . $e->getMessage() . "\n" . $e->getTraceAsString());
             abort(500);
@@ -93,26 +100,40 @@ class CampaignController extends Controller
         return Inertia::render('Admin/campaigns/CreateEdit');
     }
 
-    public function send(Campaign $campaign)
+    public function send(Campaign $campaign, Request $request)
     {
         $leads = Lead::withEmail()->get();
         $sentCount = 0;
         $errors = [];
 
+        $selectedAccountId = $request->outlook_account_id;
+
         foreach ($leads as $lead) {
             // Check if already sent to this lead for this campaign
             $alreadySent = EmailLog::where('campaign_id', $campaign->id)
-                                 ->where('lead_id', $lead->id)
-                                 ->exists();
-            
+                ->where('lead_id', $lead->id)
+                ->exists();
+
             if ($alreadySent) {
                 continue;
             }
 
-            $account = OutlookAccount::available()->first();
-            if (!$account) {
-                $errors[] = 'No available Outlook accounts with remaining daily limit';
-                break;
+            // Use manually selected account or auto-select available one
+            if ($selectedAccountId) {
+                $account = OutlookAccount::where('id', $selectedAccountId)
+                    ->whereColumn('sent_today', '<', 'daily_limit')
+                    ->first();
+
+                if (!$account) {
+                    $errors[] = 'Selected Outlook account has reached daily limit or is not available';
+                    break;
+                }
+            } else {
+                $account = OutlookAccount::available()->first();
+                if (!$account) {
+                    $errors[] = 'No available Outlook accounts with remaining daily limit';
+                    break;
+                }
             }
 
             try {
@@ -137,7 +158,6 @@ class CampaignController extends Controller
                 if ($account->sent_today >= $account->daily_limit) {
                     $account->update(['status' => 'sent']);
                 }
-
             } catch (\Exception $e) {
                 $errors[] = "Failed to send to {$lead->email}: " . $e->getMessage();
                 Log::error("Email sending failed: " . $e->getMessage());
@@ -151,6 +171,10 @@ class CampaignController extends Controller
         }
 
         $message = "Campaign sent successfully. {$sentCount} emails sent.";
+        if ($selectedAccountId) {
+            $selectedAccount = OutlookAccount::find($selectedAccountId);
+            $message .= " Using account: {$selectedAccount->email}";
+        }
         if (!empty($errors)) {
             $message .= ' Some errors occurred: ' . implode(', ', array_slice($errors, 0, 3));
         }

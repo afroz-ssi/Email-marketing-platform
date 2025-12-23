@@ -20,23 +20,6 @@
             <!-- begin:: Header Topbar -->
             <div class="kt-header__topbar">
                 <!--begin: Quick Actions -->
-                <div class="kt-header__topbar-item dropdown">
-                    <div
-                        class="dropdown-menu dropdown-menu-fit dropdown-menu-right dropdown-menu-anim dropdown-menu-top-unround dropdown-menu-xl">
-                        <form>
-                            <!--begin: Head -->
-                            <div class="kt-head kt-head--skin-dark"
-                                style="background-image:admin_assets/media/misc/bg-1.jpg">
-                                <h3 class="kt-head__title">
-                                    User Quick Actions
-                                    <span class="kt-space-15"></span>
-                                    <span class="btn btn-success btn-sm btn-bold btn-font-md">23 tasks pending</span>
-                                </h3>
-                            </div>
-                            <!--end: Head -->
-                        </form>
-                    </div>
-                </div>
 
                 <!--begin: User Bar -->
                 <div class="kt-header__topbar-item kt-header__topbar-item--user">
@@ -49,8 +32,7 @@
                                 :src="$page.props.auth.user?.profile_photo_url" />
 
                             <!--use below badge element instead the user avatar to display username's first letter(remove kt-hidden class to display it) -->
-                            <span
-                                class=" kt-hidden kt-badge kt-badge--username kt-badge--unified-success kt-badge--lg kt-badge--rounded kt-badge--bold">AA</span>
+                            <span class="kt-hidden kt-badge kt-badge--username kt-badge--unified-success kt-badge--lg kt-badge--rounded kt-badge--bold">AA</span>
                         </div>
                     </div>
                     <div
@@ -61,25 +43,17 @@
                             style="background-image:admin_assets/media/misc/bg-1.jpg">
                             <div class="kt-user-card__avatar">
                                 <img class="" alt="Pic" :src="$page.props.auth.user?.profile_photo_url" />
-
-                                <!--use below badge element instead the user avatar to display username's first letter(remove kt-hidden class to display it) -->
-                                <span
-                                    class="kt-hidden kt-badge kt-badge--lg kt-badge--rounded kt-badge--bold kt-font-success ">AA</span>
                             </div>
                             <div class="kt-user-card__name">
                                 {{$page.props.auth.user.full_name}}
                             </div>
-                            <!-- <div class="kt-user-card__badge">
-                                <span class="btn btn-success btn-sm btn-bold btn-font-md">23 messages</span>
-                            </div> -->
                         </div>
 
                         <!--end: Head -->
 
                         <!--begin: Navigation -->
                         <div class="kt-notification">
-                            <!-- <a href="#" class="kt-notification__item"> -->
-                                <Link :href="route('admin.profile')" class="kt-notification__item">
+                                <a href="javascript:void(0);" class="kt-hidden kt-notification__item">
                                 <div class="kt-notification__item-icon">
                                     <i class="flaticon2-calendar-3 kt-font-success"></i>
                                 </div>
@@ -87,13 +61,9 @@
                                     <div class="kt-notification__item-title kt-font-bold">
                                         My Profile
                                     </div>
-                                <!-- <div class="kt-notification__item-time">
-                                        Change Password
-                                    </div> -->
                                 </div>
-                                </Link>
-                            <!-- </a> -->
-                            <div class="kt-notification__custom">
+                                </a>
+                                <div class="kt-notification__custom">
                                 
                                 <Link :href="route('admin.logout')" class="btn btn-label-brand btn-sm btn-bold" method="post" as="button" type="button">Sign Out</Link>
                             </div>

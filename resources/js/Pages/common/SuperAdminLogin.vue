@@ -30,7 +30,7 @@
                             <span class="text-danger" v-if="form.errors.password">{{ form.errors.password }}</span>
                         </div>
                         <div class="scr_footer">
-                            <Link :href="route('admin.forgotPassword')">Forgot Password?</Link>
+                            <!-- <Link :href="route('admin.forgotPassword')">Forgot Password?</Link> -->
                             <button type="submit" class="btn btn-primary" :disabled="form.processing">Login</button>
                         </div>
                     </form>

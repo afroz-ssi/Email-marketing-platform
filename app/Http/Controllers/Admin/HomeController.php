@@ -9,6 +9,8 @@ use App\Http\Controllers\Controller;
 use App\Mail\LoginVerificationMail;
 use App\Models\Campaign;
 use App\Models\EmailLog;
+use App\Models\Lead;
+use App\Models\OutlookAccount;
 use App\Models\User;
 use App\Rules\MatchOldPassword;
 use App\Rules\NewOldPasswordNotSame;
@@ -46,58 +48,22 @@ class HomeController extends Controller
                 $request->session()->regenerate();
                 return redirect()->intended('/admin/dashboard');
             }
-            session(['otp_user_id' => Auth::id()]);
-            Auth::logout();
-
-            $otp = rand(100000, 999999);
-            session(['otp_code' => $otp]);
-
-            Mail::to($credentials['email'])->queue(new LoginVerificationMail($otp));
-
-            return redirect()->back()->with('props_data', 'opt_send');
         }
 
         return back()->withErrors(['email' => 'The provided credentials do not match our records.'])->onlyInput('email');
-    }
-
-    public function verifyOtp(Request $request)
-    {
-        $request->validate([
-            'otp' => ['required', 'digits:6']
-        ]);
-
-        if (strlen($request->otp) == 6 || $request->otp == session('otp_code')) {
-            $userId = session('otp_user_id');
-            Auth::loginUsingId($userId);
-            $user = User::find($userId);
-            $request->session()->regenerate();
-
-            if ($user->role_name != 'SUPER-ADMIN') {
-                $user->activities()->create([
-                    'activity' => 'Login at ' . now(),
-                    'ip' => $request->ip()
-                ]);
-            }
-            // Clear OTP session
-            session()->forget(['otp_code', 'otp_user_id']);
-
-            return redirect('/admin/dashboard');
-        }
-        return back()->withErrors([
-            'otp' => 'Invalid Verification Code',
-        ]);
     }
 
     public function dashboard()
     {
         $data = [
             'totalSent' => EmailLog::count(),
-            'totalLeads' => \App\Models\Lead::count(),
+            'totalLeads' => Lead::count(),
             'totalCampaigns' => Campaign::count(),
-            'totalOutlookAccounts' => \App\Models\OutlookAccount::count(),
-            'activeOutlookAccounts' => \App\Models\OutlookAccount::active()->count(),
+            'totalOutlookAccounts' => OutlookAccount::count(),
+            'activeOutlookAccounts' => OutlookAccount::active()->count(),
             'campaigns' => Campaign::select('name', 'sent_count')->orderBy('sent_count', 'desc')->limit(5)->get(),
-            'outlookUsage' => \App\Models\OutlookAccount::select('email', 'daily_limit', 'sent_today')->get(),
+            'outlookUsage' => OutlookAccount::select('email', 'daily_limit', 'sent_today')->get(),
+
             'monthlyEmails' => EmailLog::selectRaw('MONTHNAME(sent_at) as month, COUNT(*) as total')
                 ->whereYear('sent_at', now()->year)
                 ->whereNotNull('sent_at')

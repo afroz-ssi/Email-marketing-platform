@@ -75,7 +75,7 @@
                       aria-controls="kt_table_1"
                       rowspan="1"
                       colspan="1"
-                      style="width: 15%"
+                      style="width: 25%"
                       aria-label=" sort column ascending"
                     >
                       Send Mail
@@ -84,7 +84,6 @@
                         style="cursor: pointer"
                       ></i>
                     </th>
-                    <th>Status</th>
                   </tr>
 
                   <tr class="filter">
@@ -107,18 +106,6 @@
                       />
                     </th>
                     <th></th>
-                    <th>
-                      <select
-                        class="form-control form-control-sm form-filter kt-input"
-                        v-model="form.status"
-                        title="Select"
-                        data-col-index="2"
-                      >
-                        <option value="">Select One</option>
-                        <option value="1">Delivered</option>
-                        <option value="0">Pending</option>
-                      </select>
-                    </th>
 
                     <th style="width: 20%">
                       <div
@@ -185,17 +172,36 @@
                     </td>
                     <td>{{ campaign?.message }}</td>
                     <td>
-                      <button
-                        class="btn btn-brand kt-btn btn-sm kt-btn--icon button-fx"
-                        @click="sendMail(campaign?.id)"
-                      >
-                        <span>
-                          <i class="la la-send"></i>
-                          <span>Send Mail</span>
-                        </span>
-                      </button>
+                      <div class="d-flex align-items-center">
+                        <select
+                          v-model="selectedAccounts[campaign.id]"
+                          class="form-control form-control-sm mr-2"
+                          style="width: 150px"
+                        >
+                          <option
+                            v-for="account in outlookAccounts"
+                            :key="account.id"
+                            :value="account.id"
+                            :disabled="
+                              account.sent_today >= account.daily_limit
+                            "
+                          >
+                            {{ account.email }} ({{ account.sent_today }}/{{
+                              account.daily_limit
+                            }})
+                          </option>
+                        </select>
+                        <button
+                          class="btn btn-brand kt-btn btn-sm kt-btn--icon button-fx"
+                          @click="sendMail(campaign?.id)"
+                        >
+                          <span>
+                            <i class="la la-send"></i>
+                            <span>Send</span>
+                          </span>
+                        </button>
+                      </div>
                     </td>
-                    <td></td>
                     <td nowrap="" class="align-center">
                       <span class="dropdown">
                         <a
@@ -277,6 +283,8 @@ import { pickBy } from "lodash";
 
 const props = defineProps({
   campaigns: Object,
+  outlookAccounts: Array,
+  defaultAccountId: Number,
 });
 
 const params = () => new URLSearchParams(window.location.search);
@@ -285,6 +293,15 @@ const form = reactive({
   name: params().get("name") || null,
   message: params().get("message") || null,
 });
+
+const selectedAccounts = reactive({});
+
+// Set default account for all campaigns
+if (props.defaultAccountId && props.campaigns?.data) {
+  props.campaigns.data.forEach((campaign) => {
+    selectedAccounts[campaign.id] = props.defaultAccountId;
+  });
+}
 
 onMounted(() => {
   emit.emit("pageName", "Campaign Management", [
@@ -332,8 +349,10 @@ const deleteConfirm = (id) => {
 };
 
 const sendMail = (id) => {
-  console.log(id);
-  router.post(route("admin.sendCampaign", id));
+  const accountId = selectedAccounts[id] || null;
+  router.post(route("admin.sendCampaign", id), {
+    outlook_account_id: accountId,
+  });
 };
 
 const resetAllAccounts = () => {

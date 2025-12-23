@@ -10,13 +10,9 @@ Route::any('otp-validations', [CommonController::class, 'otpValidations'])->name
 Route::any('reset-password', [CommonController::class, 'resetPassword'])->name('resetPassword');
 Route::get('login', [HomeController::class, 'index'])->name('login');
 Route::post('login', [HomeController::class, 'authenticate'])->name('login-submit');
-Route::post('verify-otp', [HomeController::class, 'verifyOtp'])->name('verify-otp');
-
 
 Route::middleware(['customAuth', 'isAdmin'])->group(function () {
     Route::get('dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
-    Route::any('admin-profile', [HomeController::class, 'adminProfile'])->name('profile');
-    Route::post('admin-change-password', [HomeController::class, 'adminChangePassword'])->name('changePassword');
     Route::post('logout', [HomeController::class, 'logout'])->name('logout');
 
     /** Lead */
